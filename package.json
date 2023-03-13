@@ -1,0 +1,27 @@
+{
+  "name": "mongoose-expenses-project",
+  "version": "1.0.0",
+  "description": "a server that takes recipes with specific ingredient from user input and shows them in site , can also filer by food senstivity",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/almog122/mongoose-expenses-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/almog122/mongoose-expenses-project/issues"
+  },
+  "homepage": "https://github.com/almog122/mongoose-expenses-project#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "moment": "^2.29.4",
+    "mongoose": "^7.0.1",
+    "path": "^0.12.7"
+  }
+}
