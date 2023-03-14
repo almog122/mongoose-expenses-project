@@ -15,7 +15,7 @@ const expenseSchema = new Schema(
         return {
           item: this.item,
           amount: this.amount,
-          date: moment(this.date).format("MMMM Do YYYY, h:mm:ss a"),
+          date: moment(this.date).format("YYYY-MM-DD"),
           group: this.group,
         };
       },
