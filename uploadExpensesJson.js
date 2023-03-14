@@ -11,7 +11,7 @@ for (let expense of ExpenseData) {
   let exp = new Expense({
     item: expense.item,
     amount: expense.amount,
-    date: new Date(expense.date),
+    date: moment(new Date(expense.date)).format("YYYY-MM-DD"),
     group: expense.group,
   });
 

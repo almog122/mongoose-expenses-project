@@ -16,10 +16,7 @@ const convertExpensesDateToMoment = function (expenses) {
 
 router.get("/expenses", function (req, res) {
   let d1 = req.body.d1;
-  let d2 =
-    req.body.d2 == undefined
-      ? moment().format("YYYY-MM-DD")
-      : moment(req.body.d2).format("YYYY-MM-DD");
+  let d2 = req.body.d2 == undefined ? moment().format("YYYY-MM-DD") : moment(req.body.d2).format("YYYY-MM-DD");
 
   if (d1 != undefined) {
     d1 = new Date(d1);
@@ -35,25 +32,22 @@ router.get("/expenses", function (req, res) {
       },
     ]).then(function (totalAmount) {
       res.send(totalAmount);
-      return;
     });
-  } else {
+    return;
+  }
+
     Expense.find({})
       .sort({ date: -1 })
       .then(function (expenses) {
         res.send(convertExpensesDateToMoment(expenses));
       });
-  }
 });
 
 router.post("/expenses", function (req, res) {
   let item = req.body.item;
   let amount = req.body.amount;
   let group = req.body.group;
-  let date =
-    req.body.date == undefined
-      ? moment().format("YYYY-MM-DD")
-      : moment(req.body.date).format("YYYY-MM-DD");
+  let date = req.body.date == undefined ? moment().format("YYYY-MM-DD") : moment(req.body.date).format("YYYY-MM-DD");
 
   let exp = new Expense({
     item: item,
@@ -80,6 +74,7 @@ router.put("/update/:group1/:group2", function (req, res) {
   ).then(function (expense) {
     res.send(`${expense.item} group changed from ${group1} to ${group2}`);
   });
+  
 });
 
 router.get("/expenses/:group", function (req, res) {
@@ -97,8 +92,8 @@ router.get("/expenses/:group", function (req, res) {
       },
     ]).then(function (totalAmount) {
       res.send(totalAmount);
-      return;
     });
+    return;
   }
 
   Expense.find({ group: group })
