@@ -1,7 +1,7 @@
-let mongoose = require("mongoose");
-let moment = require("moment");
-let Expense = require("./server/model/ExpenseModel");
-let ExpenseData = require("./data/expenses.json");
+const mongoose = require("mongoose");
+const Expense = require("./server/model/ExpenseModel");
+const moment = require("moment");
+const ExpenseData = require("./data/expenses.json");
 
 mongoose.connect("mongodb://127.0.0.1:27017/mongoose-expenses");
 
@@ -11,7 +11,7 @@ for (let expense of ExpenseData) {
   let exp = new Expense({
     item: expense.item,
     amount: expense.amount,
-    date: expense.date,
+    date: moment(expense.date).format("LLLL"),
     group: expense.group,
   });
 

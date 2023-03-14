@@ -11,7 +11,7 @@ const expenseSchema = new Schema(
   },
   {
     methods: {
-      momentDate() {
+      momentDateConvert() {
         return {
           item: this.item,
           amount: this.amount,
