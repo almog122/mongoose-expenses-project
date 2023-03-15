@@ -1,22 +1,16 @@
 const express = require("express");
-const moment = require("moment");
-const Expense = require("../model/ExpenseModel");
-
+const Expense = require("../model/expense-model");
+const dateUtil = require("../utilities/date-util");
 const router = express.Router();
 
-const convertExpensesDateToMoment = function (expenses) {
-  let covertedExpArr = [];
-
-  expenses.forEach((expense) => {
-    covertedExpArr.push(expense.momentDateConvert());
-  });
-
-  return covertedExpArr;
-};
+const DATE_FORMAT = {
+  SHORT: "LLLL",
+  DEFUALT: "YYYY-MM-DD"
+}
 
 router.get("/expenses", function (req, res) {
   let d1 = req.body.d1;
-  let d2 = req.body.d2 == undefined ? moment().format("YYYY-MM-DD") : moment(req.body.d2).format("YYYY-MM-DD");
+  let d2 = req.body.d2 == undefined ? dateUtil.convertMoment(DATE_FORMAT) : dateUtil.convertMoment(DATE_FORMAT , req.body.d2);
 
   if (d1 != undefined) {
     d1 = new Date(d1);
@@ -26,7 +20,7 @@ router.get("/expenses", function (req, res) {
       { $match: { $and: [{ date: { $gte: d1 } }, { date: { $lte: d2 } }] } },
       {
         $group: {
-          _id: `${moment(d1).format("YYYY-MM-DD")} until ${moment(d2).format("YYYY-MM-DD")}`,
+          _id: `${dateUtil.convertMoment(DATE_FORMAT, d1)} until ${dateUtil.convertMoment(DATE_FORMAT, d2)}`,
           total: { $sum: "$amount" },
         },
       },
@@ -36,18 +30,18 @@ router.get("/expenses", function (req, res) {
     return;
   }
 
-    Expense.find({})
-      .sort({ date: -1 })
-      .then(function (expenses) {
-        res.send(convertExpensesDateToMoment(expenses));
-      });
+  Expense.find({})
+    .sort({ date: -1 })
+    .then(function (expenses) {
+      res.send(dateUtil.convertExpensesArr(expenses));
+    });
 });
 
 router.post("/expenses", function (req, res) {
   let item = req.body.item;
   let amount = req.body.amount;
   let group = req.body.group;
-  let date = req.body.date == undefined ? moment().format("YYYY-MM-DD") : moment(req.body.date).format("YYYY-MM-DD");
+  let date = req.body.date == undefined ? dateUtil.convertMoment(DATE_FORMAT) : dateUtil.convertMoment(DATE_FORMAT , req.body.date);
 
   let exp = new Expense({
     item: item,
@@ -56,11 +50,13 @@ router.post("/expenses", function (req, res) {
     group: group,
   });
 
-  exp.save().then((exp) => {
-    console.log(`spend ${exp.amount}$ on ${exp.item}`);
-  });
+  exp.save().then((newExp) => {
+    res.status('201').send({result: `You spend ${newExp.amount}$ on ${newExp.item}`});
 
-  res.end();
+  }).catch((err) => {
+    res.status('400').send({result: `Couldn't save`});
+
+  });
 });
 
 router.put("/update/:group1/:group2", function (req, res) {
@@ -74,7 +70,6 @@ router.put("/update/:group1/:group2", function (req, res) {
   ).then(function (expense) {
     res.send(`${expense.item} group changed from ${group1} to ${group2}`);
   });
-  
 });
 
 router.get("/expenses/:group", function (req, res) {
